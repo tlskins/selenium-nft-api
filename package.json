@@ -1,0 +1,16 @@
+{
+  "name": "selenium-nft-api",
+  "version": "1.0.0",
+  "description": "nft scraper in selenium",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chromedriver": "^97.0.2",
+    "geckodriver": "^3.0.1",
+    "selenium-webdriver": "^4.1.1"
+  }
+}

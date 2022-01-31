@@ -29,42 +29,47 @@ async function scrapeCollections(){
     .build()
 
   console.log(`${moment().format()}: scraping ${collMaps.length} collections`)
+  let fails = 0
   while ( true ) {
-    // *** TESTING ***
-    // const collMap = collMaps.find( c => c.coll === "Solsteads" )
-    // if ( !collMap ) throw "Collection mapping not found"
-    // await scrape(db, driver, collMap)
-
     for (let i=0;i<collMaps.length;i++) {
-      let fails = 0
       const collMap = collMaps[i]
+      // *** TESTING ***
+      // const collMap = collMaps.find( c => c.coll === "Botborgs" )
+      // if ( !collMap ) throw "Collection mapping not found"
+
       try {
         await scrape(db, driver, collMap)
+        fails = 0
       } catch(error) {
         const errMsg = `error scraping ${collMap.coll} ` + error
         console.log(errMsg)
 
         fails++
-        if ( fails <= 2 ) i--
-
-        await upsertListings(db, {
-          _id: collMap.coll,
-          updAt: moment().format(),
-          errMsg,
-        })
+        if ( fails <= 2 ) {
+          i--
+        } else {
+          await upsertSnapshot(db, {
+            _id: `Magic Eden-${collMap.coll}`,
+            updAt: moment().format(),
+            errMsg,
+          })
+          fails = 0
+        }
       }
       sleep(100)
     }
+
+    console.log('Finished loop of all collections...')
   }
 
 }
 
 async function scrape(db, driver, collMap) {
-  console.log(`${moment().format()}: scraping ${collMap.coll}...`)
   const { coll, edenColl } = collMap
   const now = moment().format()
 
   const url = `${edenUrl}/${edenColl}`
+  console.log(`${moment().format()}: scraping ${collMap.coll}\n${url}\n`)
   await driver.get(url)
 
   await sleep(300) // collection-filter doesnt render immediately
@@ -206,9 +211,11 @@ async function scrape(db, driver, collMap) {
   }
   
   console.log('upserting listings...')
-  await upsertListings(db, {
-    _id: coll,
+  await upsertSnapshot(db, {
+    _id: `Magic Eden-${collMap.coll}`,
     updAt: now,
+    coll,
+    mkt: "Magic Eden",
     floor,
     listedCount,
     listings,
@@ -239,8 +246,8 @@ async function getCollMaps(db) {
   }).toArray();
 }
 
-async function upsertListings(db, listings) {
-  const collection = db.collection('edenListings');
+async function upsertSnapshot(db, listings) {
+  const collection = db.collection('marketSnapshots');
   await collection.updateOne({ _id: listings._id }, { $set: listings }, { upsert: true });
 }
 

@@ -4,7 +4,8 @@
   "description": "nft scraper in selenium",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",

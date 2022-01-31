@@ -32,10 +32,12 @@ async function scrapeCollections(){
   let fails = 0
   while ( true ) {
     for (let i=0;i<collMaps.length;i++) {
-      const collMap = collMaps[i]
+      
+      // const collMap = collMaps[i]
+      
       // *** TESTING ***
-      // const collMap = collMaps.find( c => c.coll === "Botborgs" )
-      // if ( !collMap ) throw "Collection mapping not found"
+      const collMap = collMaps.find( c => c.coll === "Pin Club" )
+      if ( !collMap ) throw "Collection mapping not found"
 
       try {
         await scrape(db, driver, collMap)

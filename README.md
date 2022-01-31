@@ -1,9 +1,15 @@
 # selenium-nft-api
+
 Magic Eden scraper using selenium
 
-https://understandingdata.com/install-google-chrome-selenium-ec2-aws/
+1. Install Node
+   https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html
 
-Installing on Amazon Linux 2
+2. Install Git
+   https://cloudaffaire.com/how-to-install-git-in-aws-ec2-instance/
+
+3. Install Selenium
+   https://understandingdata.com/install-google-chrome-selenium-ec2-aws/
 
 sudo curl https://intoli.com/install-google-chrome.sh | bash
 sudo mv /usr/bin/google-chrome-stable /usr/bin/google-chrome
@@ -16,3 +22,7 @@ sudo wget https://chromedriver.storage.googleapis.com/80.0.3987.106/chromedriver
 sudo unzip chromedriver_linux64.zip
 sudo mv chromedriver /usr/bin/chromedriver
 chromedriver – version
+
+4. Install pm2
+
+npm install pm2 -g

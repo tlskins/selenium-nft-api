@@ -67,10 +67,10 @@ async function scrapeCollections(){
 
 async function scrape(db, driver, collMap) {
   const { coll, edenColl } = collMap
-  const now = moment().format()
+  const now = moment().toISOString()
 
   const url = `${edenUrl}/${edenColl}`
-  console.log(`\n${moment().format()}: scraping ${collMap.coll}\n${url}`)
+  console.log(`\n${now}: scraping ${collMap.coll}\n${url}`)
   await driver.get(url)
 
   await sleep(300) // collection-filter doesnt render immediately

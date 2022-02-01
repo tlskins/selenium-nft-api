@@ -15,7 +15,7 @@ sudo curl https://intoli.com/install-google-chrome.sh | bash
 sudo mv /usr/bin/google-chrome-stable /usr/bin/google-chrome
 google-chrome – version && which google-chrome
 
-Maybe also
+Also:
 
 cd /tmp/
 sudo wget https://chromedriver.storage.googleapis.com/80.0.3987.106/chromedriver_linux64.zip
@@ -26,3 +26,12 @@ chromedriver – version
 4. Install pm2
 
 npm install pm2 -g
+
+5. Clone Repo
+
+git clone https://github.com/tlskins/selenium-nft-api
+
+6. Install dependencies
+
+cd selenium-nft-api/
+npm install

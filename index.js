@@ -33,11 +33,10 @@ async function scrapeCollections(){
   while ( true ) {
     for (let i=0;i<collMaps.length;i++) {
       
-      // const collMap = collMaps[i]
-      
+      const collMap = collMaps[i]
       // *** TESTING ***
-      const collMap = collMaps.find( c => c.coll === "Pin Club" )
-      if ( !collMap ) throw "Collection mapping not found"
+      // const collMap = collMaps.find( c => c.coll === "Pawnshop Gnomies" )
+      // if ( !collMap ) throw "Collection mapping not found"
 
       try {
         await scrape(db, driver, collMap)
@@ -71,7 +70,7 @@ async function scrape(db, driver, collMap) {
   const now = moment().format()
 
   const url = `${edenUrl}/${edenColl}`
-  console.log(`${moment().format()}: scraping ${collMap.coll}\n${url}\n`)
+  console.log(`\n${moment().format()}: scraping ${collMap.coll}\n${url}`)
   await driver.get(url)
 
   await sleep(300) // collection-filter doesnt render immediately
@@ -108,6 +107,10 @@ async function scrape(db, driver, collMap) {
       const tokenNum = getTokenNum(title)
       const priceStr = await cells[5].getText()
       const price = parseFloat(priceStr.replace(/ SOL/, ""))
+      if (isNaN(price)) {
+        console.log(`*** NAN FOUND - ${title}: ${priceStr}`)
+        continue
+      }
       const url = await salesRow.findElement(By.linkText(title)).getAttribute("href")
       const tokenAddr = url.match(/item-details\/([a-zA-Z0-9]+)/)[1]
       // const imgTxt = await salesRow.findElement(By.className("card-img-top")).getAttribute("src")
@@ -140,7 +143,6 @@ async function scrape(db, driver, collMap) {
       if ( disableTxt ) break
 
       await driver.executeScript("window.scrollTo(0, document.body.scrollHeight)")
-      console.log(`clicking next page from ${currSalesPg}`)
       await driver.executeScript("arguments[0].click()", nextPgBtn)
       await sleep(50)
     }
@@ -153,7 +155,7 @@ async function scrape(db, driver, collMap) {
   await page.sendKeys(Key.CONTROL + Key.HOME)
   viewBtns = await driver.findElements(By.className("me-tab2"))
   const itemsBtn = viewBtns[0]
-  console.log('clickin items btn', await itemsBtn.getText())
+  console.log('clickin items btn')
   await driver.executeScript("arguments[0].click()", itemsBtn)
   await sleep(50)
   

@@ -51,7 +51,7 @@ async function scrapeCollections(){
         } else {
           await upsertSnapshot(db, {
             _id: `Magic Eden-${collMap.coll}`,
-            updAt: moment().format(),
+            updAt: moment().toDate(),
             errMsg,
           })
           fails = 0
@@ -67,7 +67,7 @@ async function scrapeCollections(){
 
 async function scrape(db, driver, collMap) {
   const { coll, edenColl } = collMap
-  const now = moment().toISOString()
+  const now = moment().toDate()
 
   const url = `${edenUrl}/${edenColl}`
   console.log(`\n${now}: scraping ${collMap.coll}\n${url}`)

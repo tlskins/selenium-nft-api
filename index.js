@@ -12,8 +12,11 @@ var moment = require("moment")
 
 async function scrapeCollections(){
   const db = await createDb()
-  const collMaps = await getCollMaps(db)
+  let collMaps = await getCollMaps(db)
   if (!collMaps) throw Error("Collections not found")
+  const batches = parseInt(process.env.BATCHES)
+  const batchNum = parseInt(process.env.BATCH_NUM)
+  collMaps = collMaps.filter((_,i) => i % batches === batchNum-1)
   
   var options   = new chrome.Options()
   // options.addArguments('disable-gpu')
@@ -34,9 +37,8 @@ async function scrapeCollections(){
     for (let i=0;i<collMaps.length;i++) {
       
       const collMap = collMaps[i]
-      // *** TESTING ***
-      // const collMap = collMaps.find( c => c.coll === "Pawnshop Gnomies" )
-      // if ( !collMap ) throw "Collection mapping not found"
+      // const collMap = collMaps.find( c => c.coll === "Sovana" ) // testing
+      if ( !collMap ) throw "Collection mapping not found"
 
       try {
         await scrape(db, driver, collMap)

@@ -59,7 +59,7 @@ async function scrapeCollections(){
           fails = 0
         }
       }
-      sleep(100)
+      driver.sleep(100)
     }
 
     console.log('Finished loop of all collections...')
@@ -75,10 +75,11 @@ async function scrape(db, driver, collMap) {
   console.log(`\n${now}: scraping ${collMap.coll}\n${url}`)
   await driver.get(url)
 
-  await sleep(300) // collection-filter doesnt render immediately
+  await driver.sleep(300) // collection-filter doesnt render immediately
 
   // get number listed
-  const attrsRow = await driver.findElement(By.className("attributes-row"))
+  const attrsRow = await driver.wait(until.elementLocated(By.className("attributes-row")), 10000);
+  // const attrsRow = await driver.findElement(By.className("attributes-row"))
   const collAttrs = await attrsRow.findElements(By.className("attributes-column"))
   const numListTxt = await collAttrs[collAttrs.length-1].findElement(By.className("attribute-value")).getText()
   const listedCount = parseInt( numListTxt )
@@ -91,7 +92,7 @@ async function scrape(db, driver, collMap) {
   console.log("clicking sales...")
   await salesBtn.click()
   // await driver.executeScript("arguments[0].click()", salesBtn)
-  await sleep(150)
+  await driver.sleep(150)
 
   const sales = []
   for (let currSalesPg=0;currSalesPg<2;currSalesPg++) {
@@ -146,7 +147,7 @@ async function scrape(db, driver, collMap) {
 
       await driver.executeScript("window.scrollTo(0, document.body.scrollHeight)")
       await driver.executeScript("arguments[0].click()", nextPgBtn)
-      await sleep(50)
+      await driver.sleep(50)
     }
   }
 
@@ -159,7 +160,7 @@ async function scrape(db, driver, collMap) {
   const itemsBtn = viewBtns[0]
   console.log('clickin items btn')
   await driver.executeScript("arguments[0].click()", itemsBtn)
-  await sleep(50)
+  await driver.sleep(50)
   
   // sort listings cheapest first
   console.log("sorting listings...")
@@ -179,11 +180,11 @@ async function scrape(db, driver, collMap) {
 
   // scroll down to load more listings
   console.log("scrolling for listings...")
-  await sleep(20);
+  await driver.sleep(20);
   driver.executeScript("window.scrollTo(0, document.body.scrollHeight)")
-  await sleep(20)
+  await driver.sleep(20)
   driver.executeScript("window.scrollTo(0, document.body.scrollHeight)")
-  await sleep(150)
+  await driver.sleep(150)
 
   // scrape listings
   const els = await driver.findElements(By.className("grid-card__main"))
@@ -258,10 +259,6 @@ async function upsertSnapshot(db, listings) {
 }
 
 // utils
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
 
 function getDateFrom(agoStr) {
   const unitsMatch = agoStr.match(/\d+/)

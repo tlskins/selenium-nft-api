@@ -37,7 +37,7 @@ async function scrapeCollections(){
     for (let i=0;i<collMaps.length;i++) {
       
       const collMap = collMaps[i]
-      // const collMap = collMaps.find( c => c.coll === "Sovana" ) // testing
+      // const collMap = collMaps.find( c => c.coll === "Balloonsville" ) // testing
       if ( !collMap ) throw "Collection mapping not found"
 
       try {
@@ -199,6 +199,11 @@ async function scrape(db, driver, collMap) {
     const url = await el.findElement(By.linkText(title)).getAttribute("href")
     const tokenAddr = url.match(/item-details\/([a-zA-Z0-9]+)/)[1]
     const img = await el.findElement(By.className("card-img-top")).getAttribute("src")
+
+    if (isNaN(price)) {
+      console.log(`*** NAN FOUND - ${title}: ${priceStr}`)
+      continue
+    }
 
     if ( floor === 0.0) floor = price
 
